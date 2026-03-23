@@ -1,0 +1,20 @@
+{
+  "id": "conv-1773647158141-gq4jhrvq6",
+  "title": "Summarize Gaussian network notes clearly",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773647158141,
+  "updatedAt": 1773649299713,
+  "lastResponseAt": 1773647502408,
+  "sessionId": "fda0921d-4462-4655-a797-6d768ecac722",
+  "sdkSessionId": "fda0921d-4462-4655-a797-6d768ecac722",
+  "currentNote": "MachineLearning/14_GN/高斯网络.pdf",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 128,
+    "cacheReadInputTokens": 22876,
+    "contextWindow": 200000,
+    "contextTokens": 23005,
+    "percentage": 12
+  }
+}

@@ -1,179 +1,287 @@
+---
+title: 高斯混合模型
+tags:
+  - 机器学习
+  - 概率模型
+  - 聚类
+  - GMM
+  - EM
+aliases:
+  - Gaussian Mixture Model
+  - GMM
+created: 2026-03-15
+---
+
 # 高斯混合模型
 
-#### 基本思想
+## 概述
 
-**1.几何角度：** 多个高斯分布的加权平均
+> [!abstract] 核心思想
+> 高斯混合模型（Gaussian Mixture Model, GMM）是一种**概率生成模型**，假设数据由 $K$ 个高斯分布**混合**而成。每个样本以一定概率属于某个高斯分量，这一概率由**隐变量** $z$ 控制。
+>
+> GMM 是 [[MachineLearning/9_EM/EM|EM 算法]]最经典的应用之一，也是**软聚类**的代表方法。
 
-![image.png](assets/1)
+## 基本思想
+
+### 1. 几何角度：多个高斯分布的加权平均
+![[MachineLearning/10_GMM/assets/1.png]]
+GMM 的概率密度函数为多个高斯分布的**线性组合**：
 
 $$
 p(x)=\sum\limits_{k=1}^K\alpha_k\mathcal{N}(\mu_k,\Sigma_k)
 $$
 
-**2.混合模型角度：**
+其中 $\alpha_k$ 为第 $k$ 个高斯分量的**混合系数（权重）**，满足 $\alpha_k \ge 0,\ \sum_{k=1}^K \alpha_k = 1$。
 
-![image.png](assets/2)
+### 2. 混合模型角度：引入隐变量
 
-对于一组可观测的样本$X=\{x_i\}_{i=1}^N$,为了表示对应的样本$x$属于哪一个高斯分布
 
-我们引入一组隐变量$Z=\{z_i\}_{i=1}^N$，这个变量是一个离散的随机变量，对于每个$x_i$,其对应的$z_i$都有：
+![[MachineLearning/10_GMM/assets/2.png]]
+对于一组可观测的样本 $X=\{x_i\}_{i=1}^N$，为了表示每个样本 $x$ 属于哪一个高斯分布，我们引入一组**隐变量** $Z=\{z_i\}_{i=1}^N$。
 
-| $z$ | 1 | 2 | ... | k |
+$z$ 是一个离散随机变量，对于每个 $x_i$，其对应的 $z_i$ 服从：
+
+| $z$ | 1 | 2 | ... | $K$ |
 | --- | --- | --- | --- | --- |
-| $p(z)$ | $p_1$ | $p_2$ | ... | $p_k$ |
+| $p(z)$ | $p_1$ | $p_2$ | ... | $p_K$ |
 
 $$
-p(z=i)=p_i,\sum\limits_{i=1}^kp(z=i)=1
+p(z=k)=p_k,\quad \sum\limits_{k=1}^Kp(z=k)=1
 $$
 
-**3.生成模型角度：**
+> [!tip] 隐变量的直觉
+> 隐变量 $z_i$ 可以理解为样本 $x_i$ 的**"身份标签"**——它告诉我们 $x_i$ 是从第几个高斯分量中生成的。但在实际中，$z_i$ 是不可观测的，需要通过 EM 算法来推断。
 
-作为一个生成式模型，高斯混合模型通过隐变量 $z$ 的分布来生成样本。用概率图来表示：
+### 3. 生成模型角度：概率图表示
 
-![image.png](assets/3)
+作为一个生成式模型，GMM 通过隐变量 $z$ 的分布来生成样本。用**概率图**表示为：
+![[MachineLearning/10_GMM/assets/3.png]]
 
-其中，节点 $z$ 就是上面的概率，$x$ 就是生成的高斯分布。也就是说$z$先决定属于哪个高斯分布，然后再根据对应的高斯分布的特点采样，于是对 $p(x)$：
+其中，$\pi$ 控制 $z$ 的分布（混合系数），$\mu, \Sigma$ 控制每个高斯分量的形状。生成过程为：
+
+> [!info] GMM 数据生成过程
+> 对每个样本 $x_i$（$i = 1, \ldots, N$）：
+> 1. **采样隐变量**：$z_i \sim \mathrm{Categorical}(p_1, p_2, \ldots, p_K)$（决定属于哪个高斯分量）
+> 2. **采样观测数据**：$x_i \sim \mathcal{N}(\mu_{z_i}, \Sigma_{z_i})$（从对应的高斯分布中采样）
+
+因此，$x$ 的边际分布为：
 
 $$
 p(x)=\sum\limits_zp(x,z)=\sum\limits_{k=1}^Kp(x,z=k)=\sum\limits_{k=1}^Kp(z=k)p(x|z=k)
 $$
 
-因此：
+即：
 
 $$
 p(x)=\sum\limits_{k=1}^Kp_k\mathcal{N}(x|\mu_k,\Sigma_k)
 $$
 
-#### 极大似然估计
+## 极大似然估计
 
-对于高斯混合模型的概率密度函数：
+对于 GMM 的概率密度函数：
 
 $$
 p(x)=\sum\limits_{k=1}^Kp_k\mathcal{N}(x|\mu_k,\Sigma_k)
 $$
 
-参数为 $\theta=\{p_1,p_2,\cdots,p_K,\mu_1,\mu_2,\cdots,\mu_K\Sigma_1,\Sigma_2,\cdots,\Sigma_K\}$。
-我们通过极大似然估计得到 $\theta$ 的值：
+参数为 $\theta=\{p_1,\cdots,p_K,\ \mu_1,\cdots,\mu_K,\ \Sigma_1,\cdots,\Sigma_K\}$。通过极大似然估计求解 $\theta$：
 
 $$
-\theta_{MLE}=\mathop{argmax}\limits_{\theta}\log p(X)=\mathop{argmax}_{\theta}\sum\limits_{i=1}^N\log p(x_i)\\=\mathop{argmax}_\theta\sum\limits_{i=1}^N\log \sum\limits_{k=1}^Kp_k\mathcal{N}(x_i|\mu_k,\Sigma_k)
+\theta_{MLE}=\mathop{argmax}\limits_{\theta}\log p(X)=\mathop{argmax}_{\theta}\sum\limits_{i=1}^N\log p(x_i)=\mathop{argmax}_\theta\sum\limits_{i=1}^N\log \sum\limits_{k=1}^Kp_k\mathcal{N}(x_i|\mu_k,\Sigma_k)
 $$
 
-这个表达式直接通过求导，由于连加号的存在，无法得到解析解。因此需要使用 EM 算法。
+> [!warning] 直接求解的困难
+> 由于 $\log$ 内部存在 $\sum$（log-sum 结构），无法交换求和与对数，直接求导**无法得到解析解**。因此需要使用 [[MachineLearning/9_EM/EM|EM 算法]]进行迭代求解。
 
 ## EM 求解 GMM
 
-EM 算法的基本表达式为(其中期望那一部分也可也表示为$Q(\theta,\theta^{t+1})$)：
+[[MachineLearning/9_EM/EM|EM 算法]]的核心迭代公式为：
 
 $$
 \theta^{t+1}=\mathop{argmax}\limits_{\theta}\mathbb{E}_{z|x,\theta^t}[\log p(x,z|\theta)]
 $$
 
-**E步：** 求$Q(\theta,\theta^{t+1})$（求期望）
+其中期望部分也记为 $Q(\theta,\theta^t)$。
+
+### E步：求期望
 
 套用 GMM 的表达式，对数据集来说：
 
 $$
-Q(\theta,\theta^t)=\sum\limits_z[\log\prod\limits_{i=1}^Np(x_i,z_i|\theta)]\prod \limits_{i=1}^Np(z_i|x_i,\theta^t)\\
-
-=\sum\limits_z[\sum\limits_{i=1}^N\log p(x_i,z_i|\theta)]\prod \limits_{i=1}^Np(z_i|x_i,\theta^t)\\
-
-\sum\limits_z[\log p(x_1,z_1|\theta)+...+\log p(x_N,z_N|\theta)]\prod\limits_{i=1}^Np(z_i|x_i,\theta^t)\\
+Q(\theta,\theta^t)=\sum\limits_z\left[\log\prod\limits_{i=1}^Np(x_i,z_i|\theta)\right]\prod \limits_{i=1}^Np(z_i|x_i,\theta^t)
 $$
 
-> 对于中间的那个求和号，我们看一下第1项：
-> 
+$$
+=\sum\limits_z\left[\sum\limits_{i=1}^N\log p(x_i,z_i|\theta)\right]\prod \limits_{i=1}^Np(z_i|x_i,\theta^t)
+$$
+
+> [!quote]- 化简过程（点击展开）
+> 展开求和号，观察第 1 项：
+>
 > $$
-> \sum\limits_z\log p(x_1,z_1|\theta)\prod\limits_{i=1}^Np(z_i|x_i,\theta^t)\\
-> 
-> =\sum\limits_z\log p(x_1,z_1|\theta)p(z_1|x_1,\theta^t)\prod\limits_{i=2}^Np(z_i|x_i,\theta^t)\\
-> 
-> =\sum\limits_{z_1}\log p(x_1,z_1|\theta)p(z_1|x_1,\theta^t)\sum\limits_{z_2,\cdots,z_K}\prod\limits_{i=2}^Np(z_i|x_i,\theta^t)\\
-> 
-> =\sum\limits_{z_1}\log p(x_1,z_1|\theta)p(z_1|x_1,\theta^t)
+> \sum\limits_z\log p(x_1,z_1|\theta)\prod\limits_{i=1}^Np(z_i|x_i,\theta^t)
 > $$
-> 
-> 这里有两点不太好理解:
-> 第一，什么叫对$z$求和:这里的$z$不是一个数，而是一个离散的概率密度分布，而$z$又不止一个，所以这里是对N个离散概率密度函数求和。
-> 第二，为什么后面那一部分没了，其实写开就可以发现，它是多个概率密度函数积分的乘积，也就是$1*1*1$
+>
+> $$
+> =\sum\limits_z\log p(x_1,z_1|\theta)\cdot p(z_1|x_1,\theta^t)\prod\limits_{i=2}^Np(z_i|x_i,\theta^t)
+> $$
+>
+> $$
+> =\sum\limits_{z_1}\log p(x_1,z_1|\theta)\cdot p(z_1|x_1,\theta^t)\underbrace{\sum\limits_{z_2,\cdots,z_K}\prod\limits_{i=2}^Np(z_i|x_i,\theta^t)}_{=1}
+> $$
+>
+> $$
+> =\sum\limits_{z_1}\log p(x_1,z_1|\theta)\cdot p(z_1|x_1,\theta^t)
+> $$
+>
+> **要点解释：**
+> - **对 $z$ 求和的含义**：$z$ 不是一个数，而是 $N$ 个离散随机变量的集合，因此 $\sum_z$ 是对 $N$ 个离散分布的所有组合求和
+> - **后半部分为何消失**：展开后是多个概率分布的边缘化求和，每个 $\sum_{z_i} p(z_i|x_i,\theta^t) = 1$，因此乘积也为 1
 
-类似地，$Q$ 可以写为：
-
+类似地，$Q$ 可以化简为：
 
 $$
-Q(\theta,\theta^t)=\sum\limits_{i=1}^N\sum\limits_{z_i}\log p(x_i,z_i|\theta)p(z_i|x_i,\theta^t)
+Q(\theta,\theta^t)=\sum\limits_{i=1}^N\sum\limits_{z_i}\log p(x_i,z_i|\theta)\cdot p(z_i|x_i,\theta^t)
 $$
 
-对于 $p(x,z|\theta)$：
+**代入具体分布。** 对于联合分布 $p(x,z|\theta)$：
 
 $$
 p(x,z|\theta)=p(z|\theta)p(x|z,\theta)=p_z\mathcal{N}(x|\mu_z,\Sigma_z)
 $$
 
-对 $p(z|x,\theta^t)$：
+对于后验分布 $p(z|x,\theta^t)$（也称**响应度/责任度**）：
 
 $$
-p(z|x,\theta^t)=\frac{p(x,z|\theta^t)}{p(x|\theta^t)}=\frac{p_z^t\mathcal{N}(x|\mu_z^t,\Sigma_z^t)}{\sum\limits_kp_k^t\mathcal{N}(x|\mu_k^t,\Sigma_k^t)}
+p(z=k|x,\theta^t)=\frac{p(x,z=k|\theta^t)}{p(x|\theta^t)}=\frac{p_k^t\mathcal{N}(x|\mu_k^t,\Sigma_k^t)}{\sum\limits_{j=1}^Kp_j^t\mathcal{N}(x|\mu_j^t,\Sigma_j^t)}
 $$
 
-代入 $Q$：
+> [!note] 记号约定
+> 为简洁，记响应度为：
+>
+> $$\gamma_{ik} \triangleq p(z_i=k|x_i,\theta^t)$$
+>
+> 它表示在当前参数 $\theta^t$ 下，第 $i$ 个样本属于第 $k$ 个高斯分量的**后验概率**。
+
+代入 $Q$ 函数：
 
 $$
-Q=\sum\limits_{i=1}^N\sum\limits_{z_i}\log p_{z_i}\mathcal{N(x_i|\mu_{z_i},\Sigma_{z_i})}\frac{p_{z_i}^t\mathcal{N}(x_i|\mu_{z_i}^t,\Sigma_{z_i}^t)}{\sum\limits_kp_k^t\mathcal{N}(x_i|\mu_k^t,\Sigma_k^t)}
+Q=\sum\limits_{i=1}^N\sum\limits_{k=1}^K\gamma_{ik}\log\left[p_k\mathcal{N}(x_i|\mu_k,\Sigma_k)\right]
 $$
 
-**M步：** 求最大
-
-对于$Q$:
-
 $$
-Q=\sum\limits_{i=1}^N\sum\limits_{z_i}\log p_{z_i}\mathcal{N(x_i|\mu_{z_i},\Sigma_{z_i})}\frac{p_{z_i}^t\mathcal{N}(x_i|\mu_{z_i}^t,\Sigma_{z_i}^t)}{\sum\limits_kp_k^t\mathcal{N}(x_i|\mu_k^t,\Sigma_k^t)}
+=\sum\limits_{k=1}^K\sum\limits_{i=1}^N\gamma_{ik}\left[\log p_k+\log \mathcal{N}(x_i|\mu_k,\Sigma_k)\right]
 $$
 
-后面那一部分其实是个常数，我们用$p(z_i|x_i,\theta^t)$表示，那么就有：
+### M步：求最大化
+
+对 $Q$ 函数中的各参数分别求最优值。
+
+#### 估计混合系数 $p_k$
 
 $$
-Q=\sum\limits_{i=1}^N\sum\limits_{z_i}\log p_{z_i}\mathcal{N(x_i|\mu_{z_i},\Sigma_{z_i})}p(z_i|x_i,\theta^t)\\
-=\sum\limits_{k=1}^K\sum\limits_{i=1}^N[\log p_k+\log \mathcal{N}(x_i|\mu_k,\Sigma_k)]p(z_i=k|x_i,\theta^t)
-$$
-
-以$p_k^{t+1}$为例，进行参数估计：
-
-$$
-p_k^{t+1}=\mathop{argmax}\limits_{p_k}\sum\limits_{k=1}^K\sum\limits_{i=1}^N[\log p_k+\log \mathcal{N}(x_i|\mu_k,\Sigma_k)]p(z_i=k|x_i,\theta^t)\\\ s.t.\ \sum\limits_{k=1}^Kp_k=1
-$$
-
-即：
-
-$$
-p_k^{t+1}=\mathop{argmax}\limits_{p_k}\sum\limits_{k=1}^K\sum\limits_{i=1}^N\log p_kp(z_i=k|x_i,\theta^t)\ s.t.\ \sum\limits_{k=1}^Kp_k=1
+p_k^{t+1}=\mathop{argmax}\limits_{p_k}\sum\limits_{k=1}^K\sum\limits_{i=1}^N\gamma_{ik}\log p_k \quad s.t.\ \sum\limits_{k=1}^Kp_k=1
 $$
 
 引入 Lagrange 乘子：
 
 $$
-L(p_k,\lambda)=\sum\limits_{k=1}^K\sum\limits_{i=1}^N\log p_kp(z_i=k|x_i,\theta^t)-\lambda(1-\sum\limits_{k=1}^Kp_k)
+L(p_k,\lambda)=\sum\limits_{k=1}^K\sum\limits_{i=1}^N\gamma_{ik}\log p_k-\lambda\left(1-\sum\limits_{k=1}^Kp_k\right)
 $$
 
-对于单项
+> [!quote]- 求解过程（点击展开）
+> 对 $p_k$ 求偏导：
+>
+> $$
+> \frac{\partial L}{\partial p_k}=\sum\limits_{i=1}^N\frac{\gamma_{ik}}{p_k}+\lambda=0 \quad \Rightarrow \quad p_k = -\frac{1}{\lambda}\sum\limits_{i=1}^N\gamma_{ik}
+> $$
+>
+> 对所有 $k$ 求和，利用约束 $\sum_k p_k = 1$：
+>
+> $$
+> \sum\limits_k p_k = -\frac{1}{\lambda}\sum\limits_k\sum\limits_{i=1}^N\gamma_{ik}=1
+> $$
+>
+> 由于 $\sum_k \gamma_{ik} = \sum_k p(z_i=k|x_i,\theta^t) = 1$，所以：
+>
+> $$
+> \sum\limits_k\sum\limits_{i=1}^N\gamma_{ik} = N \quad \Rightarrow \quad \lambda = -N
+> $$
 
 $$
-\frac{\partial L}{\partial p_k}=\sum\limits_{i=1}^N\frac{1}{p_k}p(z_i=k|x_i,\theta^t)+\lambda=0\\
+\boxed{p_k^{t+1}=\frac{1}{N}\sum\limits_{i=1}^N\gamma_{ik} = \frac{N_k}{N}}
 $$
 
+其中 $N_k = \sum_{i=1}^N \gamma_{ik}$，表示**第 $k$ 个分量的有效样本数**。
 
-对于通项
+#### 估计均值 $\mu_k$
 
-$$
-\Rightarrow \sum\limits_k\sum\limits_{i=1}^Np(z_i=k|x_i,\theta^t)+\lambda\sum\limits_kp_k=0\\
-\Rightarrow\lambda=-N
-$$
-
-于是有：
+$\mu_k$ 无约束，对 $Q$ 中与 $\mu_k$ 相关的部分直接求导。展开高斯分布的对数：
 
 $$
-p_k^{t+1}=\frac{1}{N}\sum\limits_{i=1}^Np(z_i=k|x_i,\theta^t)
+\log \mathcal{N}(x_i|\mu_k,\Sigma_k) = -\frac{1}{2}(x_i-\mu_k)^T\Sigma_k^{-1}(x_i-\mu_k) + \text{const}
 $$
 
-2. $\mu_k,\Sigma_k$，这两个参数是无约束的，直接求导即可。
+对 $\mu_k$ 求导并令其为零：
+
+$$
+\frac{\partial Q}{\partial \mu_k}=\sum\limits_{i=1}^N\gamma_{ik}\Sigma_k^{-1}(x_i-\mu_k)=0
+$$
+
+$$
+\boxed{\mu_k^{t+1}=\frac{\sum\limits_{i=1}^N\gamma_{ik}\cdot x_i}{\sum\limits_{i=1}^N\gamma_{ik}}=\frac{1}{N_k}\sum\limits_{i=1}^N\gamma_{ik}\cdot x_i}
+$$
+
+> [!tip] 直觉理解
+> $\mu_k$ 的更新公式是所有样本的**加权平均**，权重就是每个样本属于第 $k$ 个分量的后验概率 $\gamma_{ik}$。这与 K-Means 中的"质心更新"非常类似，但 K-Means 使用的是**硬分配**（0 或 1），GMM 使用的是**软分配**（概率值）。
+
+#### 估计协方差矩阵 $\Sigma_k$
+
+类似地，对 $\Sigma_k$ 求导（或等价地对 $\Sigma_k^{-1}$ 求导）并令其为零：
+
+$$
+\boxed{\Sigma_k^{t+1}=\frac{1}{N_k}\sum\limits_{i=1}^N\gamma_{ik}(x_i-\mu_k^{t+1})(x_i-\mu_k^{t+1})^T}
+$$
+
+这同样是一个**加权协方差**估计。
+
+### 算法总结
+
+> [!example] GMM-EM 算法流程
+> **输入**：数据集 $X = \{x_i\}_{i=1}^N$，高斯分量数 $K$
+>
+> 1. **初始化**参数 $\theta^0 = \{p_k^0, \mu_k^0, \Sigma_k^0\}_{k=1}^K$
+> 2. **重复**直至收敛：
+>    - **E步**：计算响应度
+>      $$\gamma_{ik} = \frac{p_k^t\mathcal{N}(x_i|\mu_k^t,\Sigma_k^t)}{\sum_{j=1}^K p_j^t\mathcal{N}(x_i|\mu_j^t,\Sigma_j^t)}$$
+>    - **M步**：更新参数
+>      $$N_k = \sum_{i=1}^N \gamma_{ik}$$
+>      $$p_k^{t+1} = \frac{N_k}{N}, \quad \mu_k^{t+1} = \frac{1}{N_k}\sum_{i=1}^N \gamma_{ik} x_i, \quad \Sigma_k^{t+1} = \frac{1}{N_k}\sum_{i=1}^N \gamma_{ik}(x_i - \mu_k^{t+1})(x_i - \mu_k^{t+1})^T$$
+>    - 检查收敛：$|\log p(X|\theta^{t+1}) - \log p(X|\theta^t)| < \epsilon$
+> 3. **返回** $\theta^*$
+
+## GMM 与 K-Means 的对比
+
+| 特性 | **K-Means** | **GMM** |
+|------|-------------|---------|
+| **分配方式** | 硬分配（每个点归属一个簇） | 软分配（概率归属多个分量） |
+| **簇的形状** | 球形（基于欧氏距离） | 椭球形（由协方差矩阵决定） |
+| **优化方法** | 坐标下降 | EM 算法 |
+| **输出** | 簇标签 | 后验概率分布 |
+| **模型假设** | 非概率模型 | 概率生成模型 |
+| **关系** | — | K-Means 是 GMM 的**特例**（$\Sigma_k = \sigma^2 I$，$\sigma^2 \to 0$） |
+
+> [!important] K-Means 是 GMM 的特例
+> 当所有高斯分量的协方差矩阵取为 $\Sigma_k = \sigma^2 I$，且令 $\sigma^2 \to 0$ 时，GMM 的软分配退化为硬分配，EM 算法退化为 K-Means 算法。
+
+## 小结
+
+| 特性 | 说明 |
+|------|------|
+| **类型** | 概率生成模型 / 软聚类 |
+| **参数** | $\{p_k, \mu_k, \Sigma_k\}_{k=1}^K$ |
+| **求解** | EM 算法（E步求响应度，M步更新参数） |
+| **收敛** | 对数似然单调不降，可能陷入局部最优 |
+| **优势** | 软分配、可建模椭球形簇、概率输出 |
+| **局限** | 需指定 $K$、对初始化敏感、可能出现奇异解 |
 

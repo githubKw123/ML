@@ -1,0 +1,19 @@
+{
+  "id": "conv-1773669460826-vkmu9x09t",
+  "title": "Create VAE study notes with derivations",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773669460826,
+  "updatedAt": 1773731188935,
+  "lastResponseAt": 1773672585152,
+  "sessionId": "bf321124-c8a3-459e-89e5-b997f8869cc1",
+  "sdkSessionId": "bf321124-c8a3-459e-89e5-b997f8869cc1",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 511,
+    "cacheReadInputTokens": 37981,
+    "contextWindow": 200000,
+    "contextTokens": 38493,
+    "percentage": 19
+  }
+}

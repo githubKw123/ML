@@ -301,12 +301,6 @@ def test_ppo(agent, episodes=10, render=False):
     avg_reward = np.mean(total_rewards)
     std_reward = np.std(total_rewards)
     print(f"\n平均测试奖励: {avg_reward:.2f} ± {std_reward:.2f}")
-    print(f"Pendulum-v1解决标准: 平均奖励 > -200")
-
-    if avg_reward > -200:
-        print("✓ 环境已解决！")
-    else:
-        print("✗ 还需要继续训练")
 
     env.close()
     return total_rewards

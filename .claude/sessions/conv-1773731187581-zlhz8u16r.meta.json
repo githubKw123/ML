@@ -1,0 +1,19 @@
+{
+  "id": "conv-1773731187581-zlhz8u16r",
+  "title": "Create GAN study notes with derivations",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773731187582,
+  "updatedAt": 1773903622971,
+  "lastResponseAt": 1773731855295,
+  "sessionId": "309714e0-abcb-43c2-af12-efa6dbaf2edc",
+  "sdkSessionId": "309714e0-abcb-43c2-af12-efa6dbaf2edc",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 375,
+    "cacheReadInputTokens": 20537,
+    "contextWindow": 200000,
+    "contextTokens": 20913,
+    "percentage": 10
+  }
+}

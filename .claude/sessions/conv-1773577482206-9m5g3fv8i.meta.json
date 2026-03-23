@@ -1,0 +1,19 @@
+{
+  "id": "conv-1773577482206-9m5g3fv8i",
+  "title": "整理并补充笔记内容",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773577482206,
+  "updatedAt": 1773579352421,
+  "lastResponseAt": 1773577675817,
+  "sessionId": "63997859-d851-491c-b309-b68d5216d48b",
+  "sdkSessionId": "63997859-d851-491c-b309-b68d5216d48b",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 758,
+    "cacheReadInputTokens": 32647,
+    "contextWindow": 200000,
+    "contextTokens": 33406,
+    "percentage": 17
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "conv-1773645003987-9b4emhen4",
+  "title": "整理卡尔曼滤波通俗易懂笔记",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773645003988,
+  "updatedAt": 1773645818913,
+  "lastResponseAt": 1773645149359,
+  "sessionId": "bf458b5b-317c-459b-b011-7a65f788abe6",
+  "sdkSessionId": "bf458b5b-317c-459b-b011-7a65f788abe6",
+  "currentNote": "MachineLearning/12_HMM/线性动态系统.pdf",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 163,
+    "cacheReadInputTokens": 22656,
+    "contextWindow": 200000,
+    "contextTokens": 22820,
+    "percentage": 11
+  }
+}

@@ -1,3 +1,13 @@
+---
+title: 线性回归
+tags:
+  - 机器学习
+  - 回归
+  - 线性模型
+aliases:
+  - Linear Regression
+---
+
 # 线性回归
 
 假设数据集为：
@@ -6,13 +16,13 @@ $$
 \mathcal{D}=\{(x_1, y_1),(x_2, y_2),\cdots,(x_N, y_N)\}
 $$
 
-后面我们记：
+记：
 
 $$
-X=(x_1,x_2,\cdots,x_N)^T,Y=(y_1,y_2,\cdots,y_N)^T
+X=(x_1,x_2,\cdots,x_N)^T, \quad Y=(y_1,y_2,\cdots,y_N)^T
 $$
 
-其中，$X$是$N$个$P$维，也就是$N$行$P$列，$Y$则是$N$行列线性回归假设：
+其中 $X$ 为 $N \times P$ 矩阵（$N$ 个样本，$P$ 维特征），$Y$ 为 $N \times 1$ 列向量。线性回归的假设函数为：
 
 $$
 f(w)=w^Tx
@@ -20,139 +30,202 @@ $$
 
 ## 最小二乘法
 
-对这个问题，采用二范数定义的平方误差来定义损失函数：
+采用二范数定义的平方误差作为损失函数：
 
 $$
-L(w)=\sum\limits_{i=1}^N||w^Tx_i-y_i||^2_2
+L(w)=\sum_{i=1}^N \|w^Tx_i-y_i\|^2_2
 $$
 
-展开有$L(w)=w^TX^TXw-2w^TX^TY+Y^TY$
-
-![image.png](assets/3.1)
-
-最小化这个值的 $ \hat{w}$ ：
+展开得：
 
 $$
-\hat{w}=\mathop{argmin}\limits_wL(w)\longrightarrow\frac{\partial}{\partial w}L(w)=0 \longrightarrow2X^TX\hat{w}-2X^TY=0 \longrightarrow \hat{w}=(X^TX)^{-1}X^TY=X^+Y
+L(w)=w^TX^TXw-2w^TX^TY+Y^TY
 $$
 
-这个式子中 $(X^TX)^{-1}X^T$ 又被称为伪逆(满足四个Moore-Penrose条件)。
+> [!note]- 展开过程
+> ![[3.1.png]]
+
+最小化损失函数，令导数为零求解 $\hat{w}$：
+
+$$
+\hat{w}=\mathop{argmin}\limits_w L(w) \longrightarrow \frac{\partial}{\partial w}L(w)=0
+$$
+
+$$
+2X^TX\hat{w}-2X^TY=0 \longrightarrow \hat{w}=(X^TX)^{-1}X^TY=X^+Y
+$$
+
+其中 $(X^TX)^{-1}X^T$ 称为**伪逆**。对于满秩的 $X$ 可以直接求解；对于非满秩的情况，需要使用**奇异值分解（SVD）**：
+
+$$
+X = U\Sigma V^T
+$$
+
+于是：
+
+$$
+\hat{w} = V\Sigma^{-1}U^TY
+$$
+
+### 几何解释
+
+最小二乘法在几何上的含义：假设样本张成一个 $p$ 维列空间（满秩情况下）：
+
+$$
+\text{Col}(X) = \text{span}(x_1, x_2, \cdots, x_p)
+$$
+
+模型预测值 $\hat{Y} = Xw$ 是 $X$ 列向量的线性组合。最小二乘法要求 $Y$ 与 $\hat{Y}$ 的距离最小，因此残差 $Y - \hat{Y}$ 应与列空间正交：
+
+$$
+X^T(Y - X\hat{w}) = 0 \longrightarrow X^TX\hat{w} = X^TY \longrightarrow \hat{w} = (X^TX)^{-1}X^TY
+$$
+
+> [!tip] 几何直觉
+> 最小二乘解本质上是 $Y$ 在列空间 $\text{Col}(X)$ 上的==正交投影==，与代数推导完全一致。
 
 ## 噪声为高斯分布的 MLE
 
-对于一维的情况，记 $y=w^Tx+\epsilon,\epsilon\sim\mathcal{N}(0,\sigma^2)$，那么 $y\sim\mathcal{N}(w^Tx,\sigma^2)$。
+对于一维情况，记 $y=w^Tx+\epsilon$，其中 $\epsilon\sim\mathcal{N}(0,\sigma^2)$，则 $y\sim\mathcal{N}(w^Tx,\sigma^2)$。
 
-这样可以认为$y$是服从$w$为参数的概率模型,代入极大似然估计中：
+将 $y$ 视为以 $w$ 为参数的概率模型，代入极大似然估计：
 
 $$
-L(w)=\log p(Y|X,w)=\log\prod\limits_{i=1}^Np(y_i|x_i,w)
-=\sum\limits_{i=1}^N\log(\frac{1}{\sqrt{2\pi\sigma}}e^{-\frac{(y_i-w^Tx_i)^2}{2\sigma^2}})
-=\sum\limits_{i=1}^N(\log\frac{1}{\sqrt{2\pi\sigma}}-\frac{(y_i-w^Tx_i)^2}{2\sigma^2})
+L(w)=\log p(Y|X,w)=\log\prod_{i=1}^N p(y_i|x_i,w)
 $$
 
-$\mathop{argmax}\limits_wL(w)=\mathop{argmin}\limits_w\sum\limits_{i=1^N}(y_i-w^Tx_i)^2$
+$$
+=\sum_{i=1}^N \log\left(\frac{1}{\sqrt{2\pi\sigma}} e^{-\frac{(y_i-w^Tx_i)^2}{2\sigma^2}}\right) = \sum_{i=1}^N \left(\log\frac{1}{\sqrt{2\pi\sigma}}-\frac{(y_i-w^Tx_i)^2}{2\sigma^2}\right)
+$$
 
-这个表达式和最小二乘估计得到的结果一样，也就是说LSM等价于MLE,noise是高斯分布。
+$$
+\mathop{argmax}\limits_w L(w)=\mathop{argmin}\limits_w \sum_{i=1}^{N}(y_i-w^Tx_i)^2
+$$
+
+> [!important] MLE 与 LSE 的等价性
+> 当噪声服从高斯分布时，**MLE 等价于最小二乘估计（LSE）**。
 
 ## 正则化
 
-**存在问题**：对于$(X^TX)^{-1}X^T$，如果$X$不可逆怎么办，也就是样本没那么多，或者维度太大，导致不满秩，很可能造成过拟合
+> [!warning] 存在问题
+> 当 $X^TX$ 不可逆时（样本不足或特征维度过高导致不满秩），直接求解会失败，且容易造成**过拟合**。
 
 **解决方案：**
 
-1. 加数据
-2. 特征选择，降低特征维度（如 PCA 算法）。
-3. 正则化（相当于对$w$加个约束）
+1. **加数据** — 增加训练样本量
+2. **特征选择** — 降低特征维度（如 PCA）
+3. **正则化** — 对 $w$ 施加约束
 
-正则化一般是在损失函数（如上面介绍的最小二乘损失）上加入正则化项（表示模型的复杂度对模型的惩罚），下面我们介绍一般情况下的两种正则化框架。
-
-$$
-L1:\mathop{argmin}\limits_wL(w)+\lambda||w||_1,\lambda\gt0
-$$
+正则化在损失函数上加入正则项（惩罚模型复杂度），两种常见框架：
 
 $$
-L2:\mathop{argmin}\limits_wL(w)+\lambda||w||^2_2,\lambda \gt 0
-$$
-
-下面对最小二乘误差分别分析这两者的区别。
-
-### L1 Lasso
-
-L1正则化可以引起稀疏解。
-
-从最小化损失的角度看，由于 L1 项求导在0附近的左右导数都不是0，因此更容易取到0解。
-
-从另一个方面看，L1 正则化相当于：
-
-$$
-\mathop{argmin}\limits_wL(w)\\
-s.t. ||w||_1\lt C
-$$
-
-我们已经看到平方误差损失函数在 $w$ 空间是一个椭球，因此上式求解就是椭球和 $||w||_1=C$的切点，因此更容易相切在坐标轴上。
-
-### L2 Ridge
-
-$$
-w = \mathop {argmin}\limits_w L(w) + \lambda {w^T}w \rightarrow {\frac{\partial }{{\partial w}}(L(w) + \lambda w^T w = 0)}
+\text{L1:} \quad \mathop{argmin}\limits_w L(w)+\lambda\|w\|_1, \quad \lambda>0
 $$
 
 $$
-\frac{\partial }{{\partial w}}(w^TX^TXw-2w^TX^TY+Y^TY+\lambda  w^T w)= 0 \rightarrow \frac{\partial }{{\partial w}}(w^T(X^TX+\lambda I)w-2w^TX^TY+Y^TY)= 0
+\text{L2:} \quad \mathop{argmin}\limits_w L(w)+\lambda\|w\|^2_2, \quad \lambda>0
+$$
+
+### L1 — Lasso
+
+L1 正则化可以产生**稀疏解**（部分权重恰好为零）。
+
+- **导数角度**：L1 项在 $0$ 附近的左右导数都不为零，因此更容易取到零解
+- **约束角度**：等价于约束优化问题：
+
+$$
+\mathop{argmin}\limits_w L(w) \quad \text{s.t.} \quad \|w\|_1 \leq C
+$$
+
+平方误差的等值线是椭球，与 $\|w\|_1 = C$（菱形）的切点更容易落在坐标轴上，从而产生稀疏解。
+
+### L2 — Ridge
+
+$$
+\hat{w} = \mathop{argmin}\limits_w L(w) + \lambda w^Tw
+$$
+
+令导数为零：
+
+$$
+\frac{\partial}{\partial w}\left(w^TX^TXw - 2w^TX^TY + Y^TY + \lambda w^Tw\right) = 0
 $$
 
 $$
-2(X^TX+\lambda I)-2X^TY=0 \rightarrow \hat w = {{({X^T}X + \lambda I)}^{ - 1}}{X^T}Y
-$$
-
-这样加上一个单位矩阵就正定了正定了，利用2范数进行正则化不仅可以是模型选择 $w$ 较小的参数，同时也避免 $ X^TX$不可逆的问题。
-
-### 贝叶斯角度的正则化
-
-从概率角度，我们知道$y\sim\mathcal{N}(w^Tx,\sigma^2)$，这里认为这是y在w已知下的一个似然，那么取取先验分布 $w\sim\mathcal{N}(0,\sigma_0^2)$。于是有贝叶斯：
-
-$$
-p(w|y)=\frac{p(y|x)p(w)}{p(y)}
+\frac{\partial}{\partial w}\left(w^T(X^TX+\lambda I)w - 2w^TX^TY + Y^TY\right) = 0
 $$
 
 $$
-\hat{w}=\mathop{argmax}\limits_wp(w|Y)=\mathop{argmax}\limits_wp(Y|w)p(w)
-=\mathop{argmax}\limits_w\log p(Y|w)p(w)
+2(X^TX+\lambda I)\hat{w} - 2X^TY = 0 \longrightarrow \hat{w} = (X^TX + \lambda I)^{-1}X^TY
+$$
+
+> [!tip] L2 正则化的双重作用
+> 加入 $\lambda I$ 后：
+> 1. 使 $w$ 的各分量趋于较小值（防止过拟合）
+> 2. 保证 $X^TX + \lambda I$ 正定可逆（解决不可逆问题）
+
+### 贝叶斯角度的正则化（MAP）
+
+从概率角度，$y\sim\mathcal{N}(w^Tx,\sigma^2)$ 是 $y$ 在 $w$ 已知下的似然。
+
+#### 高斯先验 → L2 正则化
+
+取先验 $w\sim\mathcal{N}(0,\sigma_0^2)$，由贝叶斯定理：
+
+$$
+p(w|y)=\frac{p(y|w)p(w)}{p(y)}
 $$
 
 $$
-=\mathop{argmax}\limits_w(\log p(Y|w)+\log p(w))=\mathop{argmin}\limits_w[(y-w^Tx)^2+\frac{\sigma^2}{\sigma_0^2}w^Tw]
+\hat{w}=\mathop{argmax}\limits_w p(w|Y) = \mathop{argmax}\limits_w p(Y|w)p(w) = \mathop{argmax}\limits_w \log p(Y|w)p(w)
 $$
 
-![image.png](assets/3.2)
+$$
+=\mathop{argmax}\limits_w \left(\log p(Y|w)+\log p(w)\right) = \mathop{argmin}\limits_w \left[\sum_{i=1}^N(y_i-w^Tx_i)^2+\frac{\sigma^2}{\sigma_0^2}w^Tw\right]
+$$
 
-这里省略了 $X$，$p(Y)$和 $w$ 没有关系，同时也利用了上面高斯分布的 MLE的结果。这跟上一部分的推导是一样的
+> [!note]- 推导说明
+> ![[3.2.png]]
+>
+> 此处省略了 $X$；$p(Y)$ 与 $w$ 无关，利用了高斯 MLE 的结果。
+
+这与 L2 Ridge 正则化形式完全一致，其中 $\lambda = \dfrac{\sigma^2}{\sigma_0^2}$。
+
+#### Laplace 先验 → L1 正则化
+
+取 **Laplace 先验** $p(w) \propto \exp\left(-\frac{\|w\|_1}{b}\right)$，MAP 估计得到：
+
+$$
+\hat{w}=\mathop{argmin}\limits_w\left[\sum_{i=1}^N(y_i-w^Tx_i)^2+\lambda\|w\|_1\right]
+$$
+
+这与 L1 Lasso 正则化一致。
+
+> [!abstract] 概率视角总结
+> | 方法 | 先验 | 等价形式 |
+> |:---:|:---:|:---:|
+> | **MLE**（无先验） | — | 最小二乘估计 |
+> | **MAP** + 高斯先验 | $w \sim \mathcal{N}(0, \sigma_0^2)$ | L2 Ridge 正则化 |
+> | **MAP** + Laplace 先验 | $w \sim \text{Laplace}(0, b)$ | L1 Lasso 正则化 |
+>
+> 以上 MAP 均为**点估计**方法。若需推断参数的完整后验分布，则需使用**贝叶斯线性回归**。
 
 ## 小结
 
-线性回归有三个特点：
+线性回归虽是最简单的模型，但"麻雀虽小，五脏俱全"：
 
-1.线性
+- ==噪声为高斯分布==时，MLE 等价于最小二乘误差
+- 最小二乘 + ==L2 正则项== 等价于高斯先验下的 MAP 解
+- 最小二乘 + ==L1 正则项== 等价于 Laplace 先验下的 MAP 解
 
-2.全局性
+### 从线性回归到其他模型
 
-3.数据未加工
+线性回归有三个基本特点：**1. 线性**、**2. 全局性**、**3. 数据未加工**。当这些特性被修改时，就引出不同的模型：
 
-那么如果这三个特性中的某一个特点变了，就不符合线性回归了，那么随之就会引出一种新的机器学习模型
-
-**属性非线性**：及回归模型不能用线性描述了，需要$wx^2$之类多项式及逆行拟合$\longrightarrow$**多项式回归**
-
-**全局非线性**：先计算线性回归，以此为基础，整体输入到新的激活函数中变成新的非线性模型$\longrightarrow$**线性分类**
-
-**系数非线性**：根据不同的初始值或者相关设置，系数$w$是不固定的，或者进行多次变换，每次系数都不会相同$\longrightarrow$**感知机，前馈神经网络**
-
-**非全局性**：在不同区域引入不同的线性或非线性$\longrightarrow$**线性样条回归和决策树模型**
-
-**数据预加工**：降维处理$\longrightarrow$**PCA**
-
-
-
-$$
-
-$$
-
+| 修改方向 | 描述 | 对应模型 |
+|:---|:---|:---|
+| **特征非线性** | 加入高次项，如 $wx^2$ 等多项式拟合 | 多项式回归 |
+| **激活函数非线性** | 线性方程后加非线性激活函数 | 线性分类（感知机） |
+| **系数非线性** | 同一特征多次变换，每次系数不同 | 多层感知机（深度前馈网络） |
+| **局部性** | 不同区域引入不同线性/非线性 | 线性样条回归、决策树 |
+| **数据预加工** | 先对高维数据降维处理 | PCA、流形学习 |

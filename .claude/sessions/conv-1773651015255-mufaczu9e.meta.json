@@ -1,0 +1,19 @@
+{
+  "id": "conv-1773651015255-mufaczu9e",
+  "title": "整理受限玻尔兹曼机通俗笔记",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773651015255,
+  "updatedAt": 1773665406956,
+  "lastResponseAt": 1773652744657,
+  "sessionId": "af8490ad-d01b-4a62-a020-b532b940423d",
+  "sdkSessionId": "af8490ad-d01b-4a62-a020-b532b940423d",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 414,
+    "cacheReadInputTokens": 27051,
+    "contextWindow": 200000,
+    "contextTokens": 27466,
+    "percentage": 14
+  }
+}

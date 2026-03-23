@@ -1,0 +1,7 @@
+{
+  "autoSync": true,
+  "bidirectionalSync": false,
+  "pythonInterpreter": "D:\\anacoda\\envs\\ml\\python.exe",
+  "notebookEditorCommand": "jupyter-lab",
+  "enableCodeBlocks": true
+}

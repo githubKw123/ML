@@ -1,0 +1,19 @@
+{
+  "id": "conv-1773632068787-j740bkq6t",
+  "title": "整理文章为笔记格式",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773632068787,
+  "updatedAt": 1773644917186,
+  "lastResponseAt": 1773638778136,
+  "sessionId": "0bc9f3da-8fb0-4442-8f04-755bd0b599b5",
+  "sdkSessionId": "0bc9f3da-8fb0-4442-8f04-755bd0b599b5",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 3459,
+    "cacheReadInputTokens": 28085,
+    "contextWindow": 200000,
+    "contextTokens": 31545,
+    "percentage": 16
+  }
+}

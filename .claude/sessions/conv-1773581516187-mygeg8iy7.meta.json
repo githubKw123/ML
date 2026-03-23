@@ -1,0 +1,20 @@
+{
+  "id": "conv-1773581516187-mygeg8iy7",
+  "title": "Organize and supplement notes using Skill",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773581516187,
+  "updatedAt": 1773581742439,
+  "lastResponseAt": 1773581692907,
+  "sessionId": "b2f5ae43-0cfc-420a-846d-27b39bb7f9b3",
+  "sdkSessionId": "b2f5ae43-0cfc-420a-846d-27b39bb7f9b3",
+  "currentNote": "MachineLearning/9_EM/EM.md",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 598,
+    "cacheReadInputTokens": 28657,
+    "contextWindow": 200000,
+    "contextTokens": 29256,
+    "percentage": 15
+  }
+}

@@ -1,166 +1,335 @@
-# 变分推断
+---
+title: 变分推断
+tags:
+  - 机器学习
+  - 推断
+  - 变分推断
+  - 贝叶斯
+aliases:
+  - Variational Inference
+  - VI
+---
 
-#### 背景
+# 变分推断（Variational Inference）
 
-如果推断要求的后验的参数空间十分大，无法精确求解，只能通过近似方式求解，包括：
-确定性近似-如变分推断
-随机近似-如 MCMC，MH，Gibbs
+## 背景
 
-#### 基于平均场假设的变分推断
+> [!abstract] 核心思想
+> 变分推断的本质是将**推断问题（求后验）转化为优化问题**：用一个简单的分布 $q(Z)$ 去逼近难以求解的真实后验 $p(Z|X)$，通过最大化 ELBO（证据下界）来实现。
 
-我们记 $X$ 为观测数据
-$Z$ 为隐变量和参数的集合（这里把参数$\theta$也包含进来是因为贝叶斯派认为$\theta$不是确定的值而是一个随机变量，所以这里把两个随机变量写在了一起）
+在 [[MachineLearning/11_inference/inference.md|推断]] 中，如果后验的参数空间十分大，无法精确求解，只能通过**近似方式**求解。近似推断主要分为两大类：
 
-EM 中的推导：
+- **确定性近似**：变分推断（Variational Inference）
+- **随机近似**：[[MachineLearning/11_inference/MCMC.md|MCMC]]、MH 采样、Gibbs 采样等
 
-$$
-\log p(X)=\log p(X,Z)-\log p(Z|X)=\log\frac{p(
-X,Z)}{q(Z)}-\log\frac{p(Z|X)}{q(Z)}
-$$
+> [!tip] 变分推断 vs MCMC
+> | 特性 | 变分推断 | MCMC |
+> |------|---------|------|
+> | 本质 | 优化问题 | 采样问题 |
+> | 速度 | 快，适合大规模数据 | 慢，采样开销大 |
+> | 精度 | 近似解（受假设限制） | 理论上可收敛到精确解 |
+> | 适用 | 大规模模型、在线学习 | 小规模精确推断 |
 
-左右两边分别积分：
+---
 
-$$
-Left:\int_Zq(Z)\log p(X)dZ=\log p(X)\\
-Right:\int_Z[\log \frac{p(X,Z)}{q(Z)}-\log \frac{p(Z|X)}{q(Z)}]q(Z)dZ\\=\int_Z\log \frac{p(X,Z)}{q(Z)}{q(Z)}dZ-\int_Z\log \frac{p(Z|X)}{q(Z)}q(Z)dZ\\
-=ELBO+KL(q,p)\\
-=L(q)+KL(q,p)
-$$
+## 从 ELBO 出发
 
-对于右边的式子，我们用一个以$q$为输入函数代替ELBO,为什么要这样做：
-因为我们的目的是求后验$p(Z|X)$，这是很难求的，但是我们发现KL是关于$p$和$q$的，如果我们求一个与$p$很接近的$q$不就可以了
-又考虑到等式左边为常数，让$q$接近的$p$就等价于KL散度等于零等价于让$L(q)$最大,于是问题就等价于：
+我们记 $X$ 为观测数据，$Z$ 为隐变量和参数的集合。
 
-$$
-\hat{q}(Z)=\mathop{argmax}\limits_{q(Z)}L(q)
-$$
+> [!info] 为什么 $Z$ 包含参数 $\theta$？
+> 贝叶斯派认为 $\theta$ 不是确定的值而是一个随机变量，所以将隐变量和参数统一记为 $Z$。
 
-$q(Z)$是好多隐变量和参数组成的联合概率分布， 为了计算方便，我们假设 $q(Z)$ 可以划分为 $M$ 个独立的组（平均场近似）：
+### ELBO 推导
 
-$$
-q(Z)=\prod\limits_{i=1}^Mq_i(z_i)
-$$
-
-因此，在 $L(q)=\int_Zq(Z)\log p(X,Z)dZ-\int_Zq(Z)\log{q(Z)}$ 中，看 $p(Z_j)$
-
-第一项,这里$Z=(z_1,z_2,...,z_m)$：
+回顾 [[MachineLearning/9_EM/EM.md|EM 算法]] 中的推导，引入一个变分分布 $q(Z)$：
 
 $$
-\int_Zq(Z)\log p(X,Z)dZ=\int_Z\prod\limits_{i=1}^Mq_i(z_i)\log p(X,Z)dZ\\
-=\int_{z_j}q_j(z_j)[\int_{Z-z_{j}}\prod\limits_{i\ne j}q_i(z_i)\log p(X,Z)d(Z-z_j)]dz_j\\
-=\int_{z_j}q_j(z_j)\mathbb{E}_{\prod\limits_{i\ne j}q_i(z_i)}[\log p(X,Z)]dz_j
+\log p(X)=\log p(X,Z)-\log p(Z|X)=\log\frac{p(X,Z)}{q(Z)}-\log\frac{p(Z|X)}{q(Z)}
 $$
 
-第二项：
+左右两边对 $q(Z)$ 积分：
 
 $$
-\int_Zq(Z)\log q(Z)dZ=\int_Z\prod\limits_{i=1}^Mq_i(z_i)\sum\limits_{i=1}^M\log q_i(z_i)dZ
+\text{Left:}\quad\int_Z q(Z)\log p(X)\,dZ=\log p(X)
 $$
 
-展开求和项第一项为：
-
 $$
-\int_Z\prod\limits_{i=1}^Mq_i(z_i)\log q_1(z_1)dZ=\\
-\int_{z_1}q_1(z_1)\log q_1(z_1)dz_1\int_{z_2}q_1(z_2)dz_2\int_{z_3}q_1(z_3)dz_3......\\
-=\int_{z_1}q_1(z_1)\log q_1(z_1)dz_1
+\text{Right:}\quad\int_Z\left[\log \frac{p(X,Z)}{q(Z)}-\log \frac{p(Z|X)}{q(Z)}\right]q(Z)\,dZ
 $$
 
-所以第二项就可以写成：
-
 $$
-\int_Zq(Z)\log q(Z)dZ=\sum\limits_{i=1}^M\int_{z_i}q_i(z_i)\log q_i(z_i)dz_i=\\
-\int_{z_j}q_j(z_j)\log q_j(z_j)dz_j+Const
+=\underbrace{\int_Z q(Z)\log \frac{p(X,Z)}{q(Z)}\,dZ}_{\text{ELBO}\triangleq L(q)}+\underbrace{\int_Z q(Z)\log \frac{q(Z)}{p(Z|X)}\,dZ}_{\text{KL}(q\|p)}
 $$
 
-这样的话两项就有一个很相似的形式，令 $\mathbb{E}_{\prod\limits_{i\ne j}q_i(z_i)}[\log p(X,Z)]=\log \hat{p}(X,z_j)$ ，让两项相减，可以得到：
+因此我们得到核心等式：
 
 $$
-\int_{z_j}q_j(z_j)\log\frac{q_j(z_j)}{\hat{p}(X,z_j)}dz_j\\
-=-KL(q_j||\hat{p}(X,z_j))
+\boxed{\log p(X) = L(q) + \text{KL}(q(Z)\|p(Z|X))}
 $$
 
-于是我们令 $q_j(z_j)=\hat{p}(X,z_j)=\mathbb{E}_{\prod\limits_{i\ne j}q_i(z_i)}[\log p(X,Z)]$ 才能得到最大值。
+### 优化目标
 
-对于上面的等式，我们可以用坐标上升法进行求解，我们看到，对每一个 $q_j$，都是固定其余的 $q_i$，求这个值，于是可以使用坐标上升的方法进行迭代求解，上面的推导针对单个样本，但是对数据集也是适用的。
+> [!important] 关键推理
+> 1. 我们的目标是求后验 $p(Z|X)$，但它很难直接计算
+> 2. 我们发现 KL 散度衡量了 $q(Z)$ 与 $p(Z|X)$ 的距离
+> 3. 等式左边 $\log p(X)$ 是常数（与 $q$ 无关）
+> 4. 因此：**最小化 KL 散度 $\Leftrightarrow$ 最大化 ELBO $L(q)$**
 
-基于平均场假设的变分推断存在一些问题：
-
-1. 假设太强，$Z$ 非常复杂的情况下，假设不适用
-2. 期望中的积分，可能无法计算
-
-## SGVI
-
-基于平均场的变分推断可以导出坐标上升的算法，但是这个假设在一些情况下假设太强，同时积分也不一定能算。
-我们知道，优化方法除了坐标上升，还有梯度上升的方式，我们希望通过梯度上升来得到变分推断的另一种算法。
-
-我们的目标函数：
+于是问题转化为优化问题：
 
 $$
-\hat{q}(Z)=\mathop{argmax}_{q(Z)}L(q)
+\hat{q}(Z)=\mathop{\arg\max}\limits_{q(Z)}L(q)
 $$
 
-这里要进行梯度上升，就要给q一个形式，所以我们假定 $q(Z)=q_\phi(Z)$，是和 $\phi$ 这个参数相连的概率分布，于是：
+> [!note] 与 EM 的关系
+> EM 算法可以看作变分推断的一个特例：
+> - **E 步**：固定 $\theta$，令 $q(Z)=p(Z|X,\theta)$，此时 KL=0，ELBO 紧贴 $\log p(X)$
+> - **M 步**：固定 $q$，最大化 ELBO 关于 $\theta$ 的部分
+>
+> 变分推断更一般化：不要求 $q$ 恰好等于真实后验，而是在一个**分布族**中找最优近似。
+
+---
+
+## 基于平均场假设的变分推断
+
+### 平均场近似
+
+$q(Z)$ 是由多个隐变量和参数组成的联合概率分布，直接优化非常困难。为了计算方便，我们假设 $q(Z)$ 可以**分解为 $M$ 个独立的组**（平均场近似 / Mean Field Approximation）：
 
 $$
-\mathop{argmax}\limits_{q(Z)}L(q)=\mathop{argmax}\limits_{\phi}L(\phi)
+q(Z)=\prod\limits_{i=1}^M q_i(z_i)
 $$
 
+> [!warning] 平均场假设的含义
+> 这个假设意味着各组隐变量之间**相互独立**。这是一个很强的假设——实际的后验分布中，变量之间往往存在复杂的依赖关系。
+
+### 坐标上升变分推断（CAVI）
+
+在平均场假设下，我们对 ELBO 进行推导，逐个优化每个 $q_j(z_j)$。
+
+**展开 ELBO**：$L(q)=\int_Z q(Z)\log p(X,Z)\,dZ - \int_Z q(Z)\log q(Z)\,dZ$
+
+**第一项**，其中 $Z=(z_1, z_2, \dots, z_M)$：
 
 $$
-L(\phi)=\mathbb{E}_{q_\phi}[\log p_\theta(x^i,z)-\log q_\phi(z)]
+\int_Z \prod\limits_{i=1}^M q_i(z_i)\log p(X,Z)\,dZ
 $$
 
-这里 $x^i$ 表示第 $i$ 个样本。
-
-下面对$L$求梯度
-
 $$
-\nabla_\phi L(\phi)=\nabla_\phi\mathbb{E}_{q_\phi}[\log p_\theta(x^i,z)-\log q_\phi(z)]\\
-=\nabla_\phi\int q_\phi(z)[\log p_\theta(x^i,z)-\log q_\phi(z)]dz\\
-=\int\nabla_\phi q_\phi(z)[\log p_\theta(x^i,z)-\log q_\phi(z)]dz+\int q_\phi(z)\nabla_\phi [\log p_\theta(x^i,z)-\log q_\phi(z)]dz\\
-=\int\nabla_\phi q_\phi(z)[\log p_\theta(x^i,z)-\log q_\phi(z)]dz-\int q_\phi(z)\nabla_\phi \log q_\phi(z)dz\\
-=\int\nabla_\phi q_\phi(z)[\log p_\theta(x^i,z)-\log q_\phi(z)]dz-\int \nabla_\phi q_\phi(z)dz\\
-=\int\nabla_\phi q_\phi(z)[\log p_\theta(x^i,z)-\log q_\phi(z)]dz- \nabla_\phi\int q_\phi(z)dz\\
-=\int\nabla_\phi q_\phi(z)[\log p_\theta(x^i,z)-\log q_\phi(z)]dz- \nabla_\phi 1\\
-=\int\nabla_\phi q_\phi(z)[\log p_\theta(x^i,z)-\log q_\phi(z)]dz\\=\int q_\phi(\nabla_\phi\log q_\phi)(\log p_\theta(x^i,z)-\log q_\phi(z))dz\\=\mathbb{E}_{q_\phi}[(\nabla_\phi\log q_\phi)(\log p_\theta(x^i,z)-\log q_\phi(z))]
+=\int_{z_j} q_j(z_j)\left[\int_{Z_{-j}}\prod\limits_{i\ne j}q_i(z_i)\log p(X,Z)\,d Z_{-j}\right]dz_j
 $$
 
-这个期望可以通过蒙特卡洛采样来近似，从而得到梯度，然后利用梯度上升的方法来得到参数：
-
-
-
-
-
 $$
-z^l\sim q_\phi(z)\\
-\mathbb{E}_{q_\phi}[(\nabla_\phi\log q_\phi)(\log p_\theta(x^i,z)-\log q_\phi(z))]\sim \frac{1}{L}\sum\limits_{l=1}^L(\nabla_\phi\log q_\phi)(\log p_\theta(x^i,z)-\log q_\phi(z))
+=\int_{z_j}q_j(z_j)\;\mathbb{E}_{\prod_{i\ne j}q_i(z_i)}[\log p(X,Z)]\;dz_j
 $$
 
-但是由于求和符号中存在一个对数项，导致我们采样$q_\phi(z)$如果解近0，这个函数值是变化是非常大的，导致了方差很大，需要采样的样本非常多。
-为了解决方差太大的问题，我们采用 Reparameterization 的技巧。
-
-考虑对于下面的式子，我们能不能让$q_\phi$跟$\phi$没有关系呢，也就是让$\phi$确定，让分布的随机性转移到另一个参数$\varepsilon$上：
+**第二项**：
 
 $$
-\nabla_\phi L(\phi)=\nabla_\phi\mathbb{E}_{q_\phi}[\log p_\theta(x^i,z)-\log q_\phi(z)]
+\int_Z q(Z)\log q(Z)\,dZ=\int_Z\prod\limits_{i=1}^M q_i(z_i)\sum\limits_{i=1}^M\log q_i(z_i)\,dZ
 $$
 
-我们取：$z=g_\phi(\varepsilon,x^i),\varepsilon\sim p(\varepsilon)$，于是对后验：$z\sim q_\phi(z|x^i)$，有定理$|q_\phi(z|x^i)dz|=|p(\varepsilon)d\varepsilon|$。代入上面的梯度中：
+展开求和项中关于 $q_1$ 的项为例：
 
 $$
-\nabla_\phi L(\phi)=\nabla_\phi\mathbb{E}_{q_\phi}[\log p_\theta(x^i,z)-\log q_\phi(z)]\\
-=\nabla_\phi L(\phi)=\nabla_\phi\int[\log p_\theta(x^i,z)-\log q_\phi(z)]q_\phi dz\\
-=\nabla_\phi\int[\log p_\theta(x^i,z)-\log q_\phi(z)]p_\varepsilon d\varepsilon\\
-=\mathbb{E}_{p(\varepsilon)}[\nabla_\phi[\log p_\theta(x^i,z)-\log q_\phi(z)]]\\
-=\mathbb{E}_{p(\varepsilon)}[\nabla_z[\log p_\theta(x^i,z)-\log q_\phi(z)]\nabla_\phi z]\\
-=\mathbb{E}_{p(\varepsilon)}[\nabla_z[\log p_\theta(x^i,z)-\log q_\phi(z)]\nabla_\phi g_\phi(\varepsilon,x^i)]
+\int_Z\prod\limits_{i=1}^M q_i(z_i)\log q_1(z_1)\,dZ = \int_{z_1}q_1(z_1)\log q_1(z_1)\,dz_1 \cdot \underbrace{\int_{z_2}q_2(z_2)\,dz_2}_{=1}\cdots = \int_{z_1}q_1(z_1)\log q_1(z_1)\,dz_1
 $$
 
-对这个式子进行蒙特卡洛采样，然后计算期望，得到梯度。
+所以第二项可以写成：
 
-之后梯度上升：
+$$
+\int_Z q(Z)\log q(Z)\,dZ=\sum\limits_{i=1}^M\int_{z_i}q_i(z_i)\log q_i(z_i)\,dz_i = \int_{z_j}q_j(z_j)\log q_j(z_j)\,dz_j+\text{Const}
+$$
+
+### 最优解
+
+两项合并后，令 $\log \hat{p}(X,z_j) \triangleq \mathbb{E}_{\prod_{i\ne j}q_i(z_i)}[\log p(X,Z)]$，则：
+
+$$
+L(q) = \int_{z_j}q_j(z_j)\log\hat{p}(X,z_j)\,dz_j - \int_{z_j}q_j(z_j)\log q_j(z_j)\,dz_j + \text{Const}
+$$
+
+$$
+= -\text{KL}\!\left(q_j(z_j)\;\|\;\hat{p}(X,z_j)\right) + \text{Const}
+$$
+
+于是最大化 ELBO 等价于令 KL 散度为零，即：
+
+$$
+\boxed{q_j^*(z_j) = \hat{p}(X,z_j) \propto \exp\left\{\mathbb{E}_{\prod_{i\ne j}q_i(z_i)}[\log p(X,Z)]\right\}}
+$$
+
+> [!tip] 坐标上升求解（CAVI 算法）
+> 对每一个 $q_j$，固定其余所有 $q_i\ (i\ne j)$，用上式更新 $q_j$。不断迭代直到收敛。
+>
+> **算法流程：**
+> 1. 初始化所有变分因子 $q_1, q_2, \dots, q_M$
+> 2. **repeat** 直到 ELBO 收敛：
+>    - **for** $j = 1, 2, \dots, M$：
+>      - $q_j(z_j) \leftarrow \exp\{\mathbb{E}_{q_{-j}}[\log p(X, Z)]\} / \text{归一化常数}$
+> 3. **return** $q^*(Z) = \prod_j q_j^*(z_j)$
+
+### 平均场变分推断的局限
+
+> [!danger] 存在的问题
+> 1. **假设太强**：当 $Z$ 内部存在强依赖时，独立假设会导致严重的近似误差
+> 2. **积分不可解**：期望 $\mathbb{E}_{q_{-j}}[\log p(X,Z)]$ 中的积分可能没有解析解
+> 3. **只能找到局部最优**：ELBO 可能是非凸的，坐标上升只保证局部收敛
+
+---
+
+## SGVI（随机梯度变分推断）
+
+### 动机
+
+基于平均场的变分推断依赖坐标上升法，但在某些情况下假设太强且积分不可解。我们希望用更通用的**梯度上升**方法来求解。
+
+### 参数化变分分布
+
+为了使用梯度方法，我们给 $q$ 一个参数化形式 $q(Z) = q_\phi(Z)$，优化目标变为：
+
+$$
+\mathop{\arg\max}\limits_{\phi}\;L(\phi) = \mathbb{E}_{q_\phi}\!\left[\log p_\theta(x^i, z) - \log q_\phi(z)\right]
+$$
+
+其中 $x^i$ 表示第 $i$ 个样本。
+
+### 梯度推导（Score Function Estimator）
+
+对 $L$ 求关于 $\phi$ 的梯度：
+
+$$
+\nabla_\phi L(\phi) = \nabla_\phi \int q_\phi(z)\left[\log p_\theta(x^i,z) - \log q_\phi(z)\right]dz
+$$
+
+利用乘积法则展开，并利用 $\nabla_\phi q_\phi = q_\phi \nabla_\phi \log q_\phi$（Score Function / REINFORCE 技巧）以及 $\int \nabla_\phi q_\phi\,dz = \nabla_\phi 1 = 0$，经推导可得：
+
+$$
+\nabla_\phi L(\phi) = \mathbb{E}_{q_\phi}\!\left[(\nabla_\phi\log q_\phi)\cdot(\log p_\theta(x^i,z)-\log q_\phi(z))\right]
+$$
+
+%%
+详细推导过程：
+∇L = ∫ ∇q·[log p - log q] dz + ∫ q·∇[log p - log q] dz
+    = ∫ ∇q·[log p - log q] dz - ∫ q·∇log q dz
+    = ∫ ∇q·[log p - log q] dz - ∫ ∇q dz
+    = ∫ ∇q·[log p - log q] dz - 0
+    = E_q[ ∇log q · (log p - log q) ]
+%%
+
+通过**蒙特卡洛采样**近似这个期望：
+
+$$
+z^l \sim q_\phi(z), \quad l = 1, \dots, L
+$$
+
+$$
+\nabla_\phi L(\phi) \approx \frac{1}{L}\sum\limits_{l=1}^L (\nabla_\phi\log q_\phi(z^l))\cdot(\log p_\theta(x^i,z^l)-\log q_\phi(z^l))
+$$
+
+> [!warning] 高方差问题
+> 由于求和中存在对数项 $\log q_\phi(z)$，当采样到的 $q_\phi(z)$ 接近 0 时，函数值变化非常大，导致**方差极大**，需要大量采样才能得到可靠的梯度估计。
+
+---
+
+## 重参数化技巧（Reparameterization Trick）
+
+### 核心思想
+
+为了解决 Score Function Estimator 方差过大的问题，我们希望将**分布的随机性**从 $q_\phi$ 转移到一个与 $\phi$ 无关的简单分布上。
+
+具体做法：引入一个确定性函数 $g_\phi$ 和噪声变量 $\varepsilon$：
+
+$$
+z = g_\phi(\varepsilon, x^i), \quad \varepsilon \sim p(\varepsilon)
+$$
+
+使得 $z \sim q_\phi(z|x^i)$，并且满足换元定理 $|q_\phi(z|x^i)\,dz| = |p(\varepsilon)\,d\varepsilon|$。
+
+> [!example] 常见例子
+> 若 $q_\phi(z) = \mathcal{N}(\mu, \sigma^2)$，令 $\varepsilon \sim \mathcal{N}(0, 1)$，则 $z = \mu + \sigma \cdot \varepsilon$。
+> 此时 $\phi = (\mu, \sigma)$，梯度可以直接通过 $g_\phi = \mu + \sigma\varepsilon$ 反向传播。
+
+### 梯度推导
+
+将 $z = g_\phi(\varepsilon, x^i)$ 代入 ELBO 梯度：
+
+$$
+\nabla_\phi L(\phi) = \nabla_\phi \int \left[\log p_\theta(x^i,z)-\log q_\phi(z)\right] q_\phi\,dz
+$$
+
+$$
+= \nabla_\phi \int \left[\log p_\theta(x^i,z)-\log q_\phi(z)\right] p(\varepsilon)\,d\varepsilon
+$$
+
+$$
+= \mathbb{E}_{p(\varepsilon)}\!\left[\nabla_\phi\left[\log p_\theta(x^i,z)-\log q_\phi(z)\right]\right]
+$$
+
+利用链式法则 $\nabla_\phi = \nabla_z \cdot \nabla_\phi z$：
+
+$$
+= \mathbb{E}_{p(\varepsilon)}\!\left[\nabla_z\!\left[\log p_\theta(x^i,z)-\log q_\phi(z)\right]\cdot\nabla_\phi g_\phi(\varepsilon,x^i)\right]
+$$
+
+对此式进行蒙特卡洛采样计算期望，得到低方差的梯度估计。
+
+### 参数更新
 
 $$
 \phi^{t+1}\leftarrow\phi^{t}+\lambda^t\nabla_\phi L(\phi)
 $$
 
+> [!success] 重参数化的优势
+> 1. **方差显著降低**：梯度通过确定性路径 $g_\phi$ 传播，不再依赖高方差的 score function
+> 2. **与深度学习兼容**：可以直接用反向传播（backprop）计算梯度
+> 3. **是 VAE 的核心技术**：正是这个技巧使得变分自编码器的端到端训练成为可能
+
+---
+
+## 与 VAE 的联系
+
+变分推断（特别是 SGVI + 重参数化技巧）是 **变分自编码器（VAE）** 的理论基础：
+
+| 概念 | 变分推断 | VAE |
+|------|---------|-----|
+| $q_\phi(z\|x)$ | 变分后验 | **编码器**（Encoder） |
+| $p_\theta(x\|z)$ | 似然函数 | **解码器**（Decoder） |
+| $p(z)$ | 先验 | 标准正态 $\mathcal{N}(0, I)$ |
+| 优化目标 | 最大化 ELBO | 最大化 ELBO |
+| 求解方法 | 重参数化 + 梯度上升 | 重参数化 + SGD |
+
+VAE 的 ELBO 可以写为：
+
+$$
+L(\theta,\phi;x^i) = \mathbb{E}_{q_\phi(z|x^i)}\!\left[\log p_\theta(x^i|z)\right] - \text{KL}\!\left(q_\phi(z|x^i)\|p(z)\right)
+$$
+
+- 第一项是**重构误差**：解码器还原数据的能力
+- 第二项是**正则化项**：让编码器的后验不要偏离先验太远
+
+---
+
+## 总结
+
+```mermaid
+graph TD
+    A[变分推断] --> B[平均场 VI<br/>CAVI]
+    A --> C[随机梯度 VI<br/>SGVI]
+    B --> B1[平均场假设<br/>q = ∏qᵢ]
+    B --> B2[坐标上升求解]
+    C --> C1[参数化 q_ϕ]
+    C --> C2[Score Function<br/>高方差]
+    C --> C3[重参数化技巧<br/>低方差]
+    C3 --> D["[[MachineLearning/19_VAE/VAE|VAE]]"]
+
+    style A fill:#4a90d9,color:#fff
+    style D fill:#e74c3c,color:#fff
+```
+
+> [!abstract] 方法对比
+> | 方法 | 假设 | 求解方式 | 优点 | 缺点 |
+> |------|------|---------|------|------|
+> | 平均场 VI | $q(Z) = \prod q_i(z_i)$ | 坐标上升 | 结构清晰，收敛有保证 | 假设太强，积分可能无解 |
+> | SGVI (Score) | $q_\phi(Z)$ 参数化 | 梯度上升 + MC采样 | 更灵活，假设更弱 | 方差大，收敛慢 |
+> | SGVI (Reparam) | $z=g_\phi(\varepsilon,x)$ | 梯度上升 + 重参数化 | 低方差，与神经网络兼容 | 需要 $q$ 可重参数化 |

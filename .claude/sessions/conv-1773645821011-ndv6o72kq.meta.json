@@ -1,0 +1,19 @@
+{
+  "id": "conv-1773645821011-ndv6o72kq",
+  "title": "整理条件随机场通俗易懂笔记",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773645821011,
+  "updatedAt": 1773649306026,
+  "lastResponseAt": 1773646056133,
+  "sessionId": "762f6372-dbc3-4fda-85bb-038d7aa6da93",
+  "sdkSessionId": "762f6372-dbc3-4fda-85bb-038d7aa6da93",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 3355,
+    "cacheReadInputTokens": 17834,
+    "contextWindow": 200000,
+    "contextTokens": 21190,
+    "percentage": 11
+  }
+}

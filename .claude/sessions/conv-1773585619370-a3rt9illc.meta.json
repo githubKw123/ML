@@ -1,0 +1,19 @@
+{
+  "id": "conv-1773585619370-a3rt9illc",
+  "title": "整理笔记内容using skill",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773585619370,
+  "updatedAt": 1773585857588,
+  "lastResponseAt": 1773585731998,
+  "sessionId": "cfb99893-1b8d-4523-9d0a-88bf597b9c45",
+  "sdkSessionId": "cfb99893-1b8d-4523-9d0a-88bf597b9c45",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 4068,
+    "cacheReadInputTokens": 18838,
+    "contextWindow": 200000,
+    "contextTokens": 22907,
+    "percentage": 11
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "conv-1773579370836-ecs2fa1le",
+  "title": "Organize note content using skill",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773579370836,
+  "updatedAt": 1773584554464,
+  "lastResponseAt": 1773579509161,
+  "sessionId": "aa2247f1-edf5-47f8-8a97-77694a97aa16",
+  "sdkSessionId": "aa2247f1-edf5-47f8-8a97-77694a97aa16",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 4819,
+    "cacheReadInputTokens": 20878,
+    "contextWindow": 200000,
+    "contextTokens": 25698,
+    "percentage": 13
+  }
+}

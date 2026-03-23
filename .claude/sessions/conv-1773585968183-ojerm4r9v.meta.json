@@ -1,0 +1,20 @@
+{
+  "id": "conv-1773585968183-ojerm4r9v",
+  "title": "整理补充笔记内容using skill",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773585968183,
+  "updatedAt": 1773631983087,
+  "lastResponseAt": 1773586182791,
+  "sessionId": "8b4e18fd-6913-496e-b8a3-65ce10e95abb",
+  "sdkSessionId": "8b4e18fd-6913-496e-b8a3-65ce10e95abb",
+  "currentNote": "MachineLearning/11_inference/VI.md",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 676,
+    "cacheReadInputTokens": 27664,
+    "contextWindow": 200000,
+    "contextTokens": 28341,
+    "percentage": 14
+  }
+}

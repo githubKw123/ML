@@ -1,0 +1,20 @@
+{
+  "id": "conv-1773584607438-xxas2gy7f",
+  "title": "Organize and expand notes using skills",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773584607439,
+  "updatedAt": 1773585079869,
+  "lastResponseAt": 1773585042191,
+  "sessionId": "58875d57-48de-4102-868c-6c679aa0e7bf",
+  "sdkSessionId": "58875d57-48de-4102-868c-6c679aa0e7bf",
+  "currentNote": "MachineLearning/10_GMM/GMM.md",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 620,
+    "cacheReadInputTokens": 37266,
+    "contextWindow": 200000,
+    "contextTokens": 37887,
+    "percentage": 19
+  }
+}

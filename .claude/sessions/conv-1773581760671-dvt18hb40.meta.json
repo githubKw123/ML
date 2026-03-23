@@ -1,0 +1,20 @@
+{
+  "id": "conv-1773581760671-dvt18hb40",
+  "title": "Organize notes using Skill format",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773581760672,
+  "updatedAt": 1773584547695,
+  "lastResponseAt": 1773581996742,
+  "sessionId": "825920c1-165f-45df-bf50-15c7a93fa6ac",
+  "sdkSessionId": "825920c1-165f-45df-bf50-15c7a93fa6ac",
+  "currentNote": "MachineLearning/6_SVM/SVM.md",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 7017,
+    "cacheReadInputTokens": 33303,
+    "contextWindow": 200000,
+    "contextTokens": 40321,
+    "percentage": 20
+  }
+}

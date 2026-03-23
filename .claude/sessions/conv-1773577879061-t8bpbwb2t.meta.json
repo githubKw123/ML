@@ -1,0 +1,19 @@
+{
+  "id": "conv-1773577879061-t8bpbwb2t",
+  "title": "Organize and supplement note content",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773577879061,
+  "updatedAt": 1773579345208,
+  "lastResponseAt": 1773578040436,
+  "sessionId": "4dff3de6-a61b-42d8-813d-8c765e186145",
+  "sdkSessionId": "4dff3de6-a61b-42d8-813d-8c765e186145",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 715,
+    "cacheReadInputTokens": 27422,
+    "contextWindow": 200000,
+    "contextTokens": 28138,
+    "percentage": 14
+  }
+}

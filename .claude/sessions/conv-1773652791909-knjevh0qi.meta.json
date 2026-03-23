@@ -1,0 +1,19 @@
+{
+  "id": "conv-1773652791909-knjevh0qi",
+  "title": "Summarize spectral clustering notes",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773652791909,
+  "updatedAt": 1773665406170,
+  "lastResponseAt": 1773654798143,
+  "sessionId": "cc8adcd9-154d-4c38-b8c9-f333277e784a",
+  "sdkSessionId": "cc8adcd9-154d-4c38-b8c9-f333277e784a",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 3007,
+    "cacheReadInputTokens": 19480,
+    "contextWindow": 200000,
+    "contextTokens": 22488,
+    "percentage": 11
+  }
+}

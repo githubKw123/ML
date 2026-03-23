@@ -1,0 +1,20 @@
+{
+  "id": "conv-1773926392245-wp98wkhtl",
+  "title": "Organize and optimize notes using skills",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773926392245,
+  "updatedAt": 1773926530715,
+  "lastResponseAt": 1773926530715,
+  "sessionId": "aff9ee4c-96c4-4d7f-a471-477b83316a06",
+  "sdkSessionId": "aff9ee4c-96c4-4d7f-a471-477b83316a06",
+  "currentNote": "MachineLearning/3_LinearRegression/LinearRegression.md",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 501,
+    "cacheReadInputTokens": 26595,
+    "contextWindow": 200000,
+    "contextTokens": 27097,
+    "percentage": 14
+  }
+}

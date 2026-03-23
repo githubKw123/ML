@@ -1,0 +1,20 @@
+{
+  "id": "conv-1773584194729-5yzuteevr",
+  "title": "Organize notes using Skill format",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773584194729,
+  "updatedAt": 1773584546303,
+  "lastResponseAt": 1773584315925,
+  "sessionId": "9fa96860-04fd-448c-8e67-9b549f5a4a30",
+  "sdkSessionId": "9fa96860-04fd-448c-8e67-9b549f5a4a30",
+  "currentNote": "MachineLearning/6_SVM/KernelMethod.md",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 4374,
+    "cacheReadInputTokens": 19409,
+    "contextWindow": 200000,
+    "contextTokens": 23784,
+    "percentage": 12
+  }
+}

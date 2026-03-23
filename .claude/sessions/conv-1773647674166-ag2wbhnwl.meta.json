@@ -1,0 +1,20 @@
+{
+  "id": "conv-1773647674166-ag2wbhnwl",
+  "title": "整理贝叶斯线性回归通俗笔记",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773647674166,
+  "updatedAt": 1773649294838,
+  "lastResponseAt": 1773648729200,
+  "sessionId": "22c855c7-dd4d-4f9a-a8d7-ed3da1e957d6",
+  "sdkSessionId": "22c855c7-dd4d-4f9a-a8d7-ed3da1e957d6",
+  "currentNote": "MachineLearning/15_BLR/贝叶斯线性回归.pdf",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 138,
+    "cacheReadInputTokens": 24349,
+    "contextWindow": 200000,
+    "contextTokens": 24488,
+    "percentage": 12
+  }
+}

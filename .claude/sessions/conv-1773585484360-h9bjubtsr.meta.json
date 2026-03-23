@@ -1,0 +1,19 @@
+{
+  "id": "conv-1773585484360-h9bjubtsr",
+  "title": "Organize notes using Skill format",
+  "titleGenerationStatus": "success",
+  "createdAt": 1773585484360,
+  "updatedAt": 1773631986912,
+  "lastResponseAt": 1773585579722,
+  "sessionId": "0522d925-130d-44d0-82be-2de3cb435323",
+  "sdkSessionId": "0522d925-130d-44d0-82be-2de3cb435323",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 3159,
+    "cacheReadInputTokens": 18264,
+    "contextWindow": 200000,
+    "contextTokens": 21424,
+    "percentage": 11
+  }
+}
