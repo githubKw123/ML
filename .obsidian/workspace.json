@@ -4,35 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "59ecd8a7f99754b9",
+        "id": "32adb86c2c407706",
         "type": "tabs",
         "children": [
           {
-            "id": "1d0f38db3b35211b",
+            "id": "de818fab2d987a48",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DeepLearning/1_前言.md.md",
+                "file": "readme.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "1_前言.md"
-            }
-          },
-          {
-            "id": "0789a0bd526591d3",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "DeepLearning/1_前言.md.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "1_前言.md"
+              "title": "readme"
             }
           }
         ]
@@ -207,53 +193,53 @@
       "claudian:Open Claudian": false
     }
   },
-  "active": "a61d16a10c006aa1",
+  "active": "de818fab2d987a48",
   "lastOpenFiles": [
+    "LLM/transformer.md",
     "readme.md",
-    "DeepLearning/1_前言.md.md",
-    "MachineLearning/1_introduction(ML).md",
-    "MachineLearning/18_NN/前馈神经网络.md",
-    "MachineLearning/3_LinearRegression/LinearRegression.md",
-    "DeepLearning/2_pre.ipynb",
-    "MachineLearning/11_inference/inference.md",
+    "LLM/introduction（LLM）.md",
+    "LLM/introduction（LLM）.md.tmp.14616.1775550518541",
     "assets/3.md",
-    "assets",
-    "MachineLearning/18_NN/Deep Belief Network.md",
-    "线性动态系统.pdf.md",
-    "MachineLearning/12_HMM/卡尔曼滤波.md",
-    "MachineLearning/11_inference/MCMC.md",
-    "MachineLearning/11_inference/VI.md",
-    "MachineLearning/12_HMM/隐马尔可夫模型 HMM.md",
-    "MachineLearning/10_GMM/GMM.md",
+    "LLM/assets/3.png",
+    "LLM/assets/6.png",
+    "LLM/assets/5.png",
+    "LLM/introduction（LLM）.md.tmp.14616.1775549758507",
+    "LLM/assets/1.png",
+    "LLM/assets/2.png",
+    "LLM/assets/img.png",
     "assets/2.md",
-    "MachineLearning/9_EM/EM.md",
-    "MachineLearning/8_PGM/assets/2.png",
-    "MachineLearning/8_PGM/assets/1.png",
-    "MachineLearning/8_PGM/PGM.md",
-    "MachineLearning/7_ExponentialFamilyDistribution/EFD.md",
-    "MachineLearning/6_SVM/KernelMethod.md",
-    "MachineLearning/6_SVM/SVM.md",
-    "资料/【机器学习】【白板推导系列】【合集 1～23】.pdf",
-    "assets/5.md",
-    "MachineLearning/6_SVM/assets/5.png",
-    "assets/4.md",
-    "MachineLearning/5_DimensionlityReduction/DimensionlityReduction.md",
-    "MachineLearning/4_LinearClassification/LinearClassification.md",
-    "MachineLearning/2_GaussianDistribution/2_GaussianDistribution.md",
-    "MachineLearning/14_GN/高斯网络.md",
-    "资料",
-    "未命名.base",
-    "资料/机器学习 周志华.pdf",
-    "DeepLearning/GAN",
-    "MachineLearning/19_VAE",
-    "DeepLearning/Deep Belief Network.md.tmp.42644.1773669240604",
-    "DeepLearning/Sigmoid Belief Network.md.tmp.32540.1773668832741",
-    "MachineLearning/_spectral_page_3.png",
-    "MachineLearning/_spectral_page_2.png",
-    "MachineLearning/_spectral_page_1.png",
-    "MachineLearning/16_Restricted Boltzmann machine/rbm_page_2.png",
-    "MachineLearning/16_Restricted Boltzmann machine/rbm_page_1.png",
-    "MachineLearning/_page_2.png",
-    "MachineLearning/_page_1.png"
+    "assets",
+    "assets/6.md",
+    "ReinforcementLearning/Dyna-Q/Dyna-Q.md",
+    "ReinforcementLearning/DRL/PPO/PPO.md",
+    "offline/Offline RL与CQL.md",
+    "ReinforcementLearning/DRL/SAC/SAC.md",
+    "offline/Offline RL与CQL.md.tmp.67716.1775183358914",
+    "offline",
+    "ReinforcementLearning/DRL/TD3/TD3.md",
+    "ReinforcementLearning/DRL/SAC/SAC.md.tmp.40988.1775182314342",
+    "ReinforcementLearning/Policy Based/PolicyBased.md",
+    "ReinforcementLearning/DRL/PPO/PPO.md.tmp.31376.1775124050993",
+    "ReinforcementLearning/DRL/PPO/ppo_pendulum_training.png",
+    "ReinforcementLearning/Dyna-Q/Dyna-Q.md.tmp.33352.1775123704355",
+    "ReinforcementLearning/DRL/SAC/sac_pendulum_training.png",
+    "ReinforcementLearning/DRL/SAC/sac.py",
+    "ReinforcementLearning/DRL/SAC",
+    "assets/7.md",
+    "assets/9.md",
+    "DeepLearning/2_pre.md",
+    "ReinforcementLearning/assets/1.png",
+    "ReinforcementLearning/Policy Based/assets/9.png",
+    "DeepLearning/3_LNN.md",
+    "assets/8.md",
+    "ReinforcementLearning/TD/TD.md",
+    "Policy Based.md",
+    "ReinforcementLearning/MC/MC.md",
+    "ReinforcementLearning/DP/DP.md",
+    "ReinforcementLearning/1.introduction（RL）.md",
+    "DeepLearning/8_RNN2.md",
+    "DeepLearning/6_CNN2.md",
+    "DeepLearning/10_optimization_algorithms.md",
+    "未命名.canvas"
   ]
 }

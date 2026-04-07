@@ -3,11 +3,10 @@
   "title": "Organize and optimize notes using skills",
   "titleGenerationStatus": "success",
   "createdAt": 1773926392245,
-  "updatedAt": 1773926530715,
+  "updatedAt": 1775051764503,
   "lastResponseAt": 1773926530715,
   "sessionId": "aff9ee4c-96c4-4d7f-a471-477b83316a06",
   "sdkSessionId": "aff9ee4c-96c4-4d7f-a471-477b83316a06",
-  "currentNote": "MachineLearning/3_LinearRegression/LinearRegression.md",
   "usage": {
     "model": "opus",
     "inputTokens": 1,

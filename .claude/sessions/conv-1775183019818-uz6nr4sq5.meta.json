@@ -1,0 +1,19 @@
+{
+  "id": "conv-1775183019818-uz6nr4sq5",
+  "title": "Create offline RL notes focusing on CQL",
+  "titleGenerationStatus": "success",
+  "createdAt": 1775183019818,
+  "updatedAt": 1775183369522,
+  "lastResponseAt": 1775183369522,
+  "sessionId": "4821cca2-13c8-4e7f-90ac-28886e7d053f",
+  "sdkSessionId": "4821cca2-13c8-4e7f-90ac-28886e7d053f",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 5205,
+    "cacheReadInputTokens": 22102,
+    "contextWindow": 200000,
+    "contextTokens": 27308,
+    "percentage": 14
+  }
+}

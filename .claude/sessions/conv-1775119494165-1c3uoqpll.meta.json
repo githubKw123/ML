@@ -1,0 +1,20 @@
+{
+  "id": "conv-1775119494165-1c3uoqpll",
+  "title": "Organize and supplement notes using skills",
+  "titleGenerationStatus": "success",
+  "createdAt": 1775119494166,
+  "updatedAt": 1775122081072,
+  "lastResponseAt": 1775119709584,
+  "sessionId": "fa9bad3d-d1f9-483e-a138-3b0c06dd0e05",
+  "sdkSessionId": "fa9bad3d-d1f9-483e-a138-3b0c06dd0e05",
+  "currentNote": "ReinforcementLearning/TD/TD.md",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 161,
+    "cacheReadInputTokens": 45424,
+    "contextWindow": 200000,
+    "contextTokens": 45586,
+    "percentage": 23
+  }
+}

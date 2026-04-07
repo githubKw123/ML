@@ -1,0 +1,19 @@
+{
+  "id": "conv-1775123581998-8wxdl3ad6",
+  "title": "Create Dyna-Q study notes document",
+  "titleGenerationStatus": "success",
+  "createdAt": 1775123581999,
+  "updatedAt": 1775124232545,
+  "lastResponseAt": 1775123718147,
+  "sessionId": "1fb83a04-7744-4377-b0cf-e50f27b524ba",
+  "sdkSessionId": "1fb83a04-7744-4377-b0cf-e50f27b524ba",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 4899,
+    "cacheReadInputTokens": 25871,
+    "contextWindow": 200000,
+    "contextTokens": 30771,
+    "percentage": 15
+  }
+}

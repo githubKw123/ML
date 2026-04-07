@@ -1,0 +1,20 @@
+{
+  "id": "conv-1775116405714-tve6y2e4x",
+  "title": "整理补充笔记内容",
+  "titleGenerationStatus": "success",
+  "createdAt": 1775116405714,
+  "updatedAt": 1775122081531,
+  "lastResponseAt": 1775116623906,
+  "sessionId": "de9cc46b-c4d0-4fd0-8d85-b6cb253e674d",
+  "sdkSessionId": "de9cc46b-c4d0-4fd0-8d85-b6cb253e674d",
+  "currentNote": "ReinforcementLearning/MC/MC.md",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 812,
+    "cacheReadInputTokens": 41870,
+    "contextWindow": 200000,
+    "contextTokens": 42683,
+    "percentage": 21
+  }
+}

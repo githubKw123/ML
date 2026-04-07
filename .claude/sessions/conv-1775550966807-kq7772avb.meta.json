@@ -1,0 +1,20 @@
+{
+  "id": "conv-1775550966807-kq7772avb",
+  "title": "整理笔记内容",
+  "titleGenerationStatus": "success",
+  "createdAt": 1775550966807,
+  "updatedAt": 1775551116415,
+  "lastResponseAt": 1775551116415,
+  "sessionId": "a72840f8-9622-441e-9f38-296917454dee",
+  "sdkSessionId": "a72840f8-9622-441e-9f38-296917454dee",
+  "currentNote": "LLM/transformer.md",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 410,
+    "cacheReadInputTokens": 18890,
+    "contextWindow": 200000,
+    "contextTokens": 19301,
+    "percentage": 10
+  }
+}

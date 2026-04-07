@@ -1,0 +1,19 @@
+{
+  "id": "conv-1775124233900-f7lvp4g5i",
+  "title": "请你自己查找资料，帮我整理份TD3的笔记，放在TD3文件下",
+  "titleGenerationStatus": "failed",
+  "createdAt": 1775124233900,
+  "updatedAt": 1775183016514,
+  "lastResponseAt": 1775182345070,
+  "sessionId": "9ce034a1-1789-4a24-8e7f-d2513ced10b2",
+  "sdkSessionId": "9ce034a1-1789-4a24-8e7f-d2513ced10b2",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 9806,
+    "cacheReadInputTokens": 48978,
+    "contextWindow": 200000,
+    "contextTokens": 58785,
+    "percentage": 29
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "conv-1775549489339-nxrei3wnm",
+  "title": "补充完善LLM介绍文档笔记",
+  "titleGenerationStatus": "success",
+  "createdAt": 1775549489339,
+  "updatedAt": 1775550938350,
+  "lastResponseAt": 1775550533614,
+  "sessionId": "27257cde-9423-4be4-8b08-e858c8c39f7d",
+  "sdkSessionId": "27257cde-9423-4be4-8b08-e858c8c39f7d",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 5663,
+    "cacheReadInputTokens": 45444,
+    "contextWindow": 200000,
+    "contextTokens": 51108,
+    "percentage": 26
+  }
+}

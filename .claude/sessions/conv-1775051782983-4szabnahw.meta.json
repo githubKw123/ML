@@ -1,0 +1,20 @@
+{
+  "id": "conv-1775051782983-4szabnahw",
+  "title": "Organize notes using skill framework",
+  "titleGenerationStatus": "success",
+  "createdAt": 1775051782985,
+  "updatedAt": 1775113740798,
+  "lastResponseAt": 1775052564851,
+  "sessionId": "c5f3ec79-27ff-41eb-83b2-1467cdd4bea6",
+  "sdkSessionId": "c5f3ec79-27ff-41eb-83b2-1467cdd4bea6",
+  "currentNote": "ReinforcementLearning/1.introduction（RL）.md",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 622,
+    "cacheReadInputTokens": 28978,
+    "contextWindow": 200000,
+    "contextTokens": 29601,
+    "percentage": 15
+  }
+}
