@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:zh-v2.d2l.ai)",
+      "Bash(python *)"
+    ]
+  }
+}
